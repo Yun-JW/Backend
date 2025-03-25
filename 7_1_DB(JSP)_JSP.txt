@@ -1,0 +1,88 @@
+7_1_DB(JSP)_JSP.txt
+
+@@@ JSP @@@
+
+@ 기존 Servlet의 문제점 @
+business 로직 상에서 presentation 로직 사용하는 것이 너무 불편하다.
+
+@ JSP @
+-Jakarta Server Pages
+	Servlet이 java 코드 사이에 HTML 태그를 작성했다면 JSP는 HTML 태그 기반에 java 코드를 작성하는 형태
+
+@ JSP 동작 원리 @
+-Servlet과의 관계 : JSP는 중간단계! 최종은 Servlet
+- 생성된 자바 파일의 위치
+	생성된 자바 파일 확인
+		Servlet Life Cycle에 해당하는 메서드
+		service 메서드의 local 변수들
+
+@ JSP Life Cycle @
+
+@ JSP 구성 요소 @
+1. directive : JSP 페이지의 속성 지정 / <%@ . . . %>
+2. script-let : 자바 코드 기술 >>> _jspService 내부에 치환됨 / <% . . . %>
+3. expression : 계산식, 함수의 호출 결과를 출력할 때 / <%= . . . %>
+4. declaration : 변수 및 메서드 선언 (class 영역 구성) / <%! . . . %>
+5. comment : JSP 페이지 내의 설명 / <%-- . -- %>
+6. built-in object : 내장 객체 - 기본적으로 제공되는 로컬 변수들 / request, ...
+7. expression language : 디자이너도 하는 쉬운 스크립트 / ${expr}
+8. JSTL : 커스텀 태그 중 자주 사용되는 것을 표준화
+
+@ directive - JSP 지시자 @
+- JSP 페이지가 실행될 때 필요한 정보를 지정하는 역할
+	필요한 정보를 컨테이너에게 알려서 서블릿 생성에 활용
+- 형태
+	<%@[directive] 속성 ="값" 속성="값" ... %>의 형태
+- 종류
+	page(모든 JSP 필수) : JSP 페이지에 대한 기본 정보 지정
+				      문서의 타입, 출력 버퍼의 크기, 에러 페이지 설정 등
+	taglib(JSTL) : JSP 페이지에서 사용할 태그 라이브러리 지정
+	include(page 모듈화 및 재사용) : JSP 페이지의 특정 영역에 다른 문서 포함
+
+@ page directive @
+- JSP page에 대한 기본 정보 지정
+- 속성
+	pageEncoding : UTF-8 / 페이지의 문자 인코딩 설정 / <%@ page pageEncoding="UTF-8" %>
+	contentType : text/html; charset=IS08859-1 / 페이지의 MIME 타입 설정 / <%@ contentType="text/html; charset=UTF-8" %>
+	language : java / 페이지에서 사용하는 언어 / <%@ page language="java" %>
+	session : true / 세션 사용 여부 설정 / <%@ page session="true%>
+	buffer : 8kb / 버퍼 크기 설정 / <%@ page buffer="16kb %>
+	autoFlush : true / 버퍼 자동 플러시 여부 설정 / <%@ page autoFlush="false" %>
+	errorpage : /오류 발생 시 이동할 페이지 설정 / <%@ page errorPage="error.jsp" %>
+	isErrorPage : false / 오류 페이지 여부 설정 / <%@ page isErrorPage = "error.jsp" %>
+	import : / 페이지에서 사용할 클래스의 패키지 /<%@ page import = "java.util.*" %>
+
+@ JSP 스크립트 요소 - java 코드 작성 @
+- script-let : <%[자바 실행문]%>
+	_jspService 메서드 내부에 삽입됨 >>> local영역
+	local 영역에 선언된 JSP 내장 객체를 자유롭게 사용
+- declaration: <%! [멤버 변수 또는 메소드] %>
+	선언 위치에 상관없이 멤버 변수 , 메서드 선언
+- expression : <%=[출력할내용]%>
+	<%=변수%>, <%=리턴이 있는 메서드 호출%>, <%=수식%>
+	servlet에서 _jspService()내부에서 out.print()형태로 변형
+- commet : <%--[주석 내용]--%>
+	JSP에서만 존재하며 Servlet에는 전달되지 않음
+	html 주석을 이용해서 민감한 내용이 화면에 전달되지 않도록 주의!!
+
+@ 내장 객체란? @
+- .jsp 파일의 _jspService 메서드 내부에 로컬 변수로 선언된 객체
+	스크립트릿 영역에서 동일한 이름으로 로컬 변수를 선언할 수 없음
+	request / 클라이언트 요청 정보
+	response / 서버의 응답 정보
+	out / 클라이언트로의 정보 출력 스트림
+	session / HTTP 세션에 대한 정보
+	application / 웹 애플리케이션에 대한 정보
+	pageContext / 현재 JSP페이지에 대한 정보
+	exception / isErrorPage=true 인 경우 사용되는 예외 객체
+	config /JSP 페이지에 대한 설정 정보 저장
+
+@ 추가적인 속성 저장을 위한 웹의 영역(scope) @
+접근 영역
+	1. page scope / JSP 페이지 내에서 유효한 속성 저장. 같은 페이지 내에서는 접근 가능, 페이지가 종료되면 소멸 
+	   / Servlet 없음 / pageContext 내장 객체
+	2. request scope /				
+	
+
+
+
