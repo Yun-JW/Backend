@@ -1,0 +1,156 @@
+6_1_DB(Servlet)_Backend_Servlet.txt
+
+@@@ Backend & Servlet @@@
+
+@ 웹 프로그램 @
+- 네트워크 너머의 서버에서 존재하며 웹을 통해서 서비스되는 프로그램
+- 비지니스 로직을 위한 backend와 사용자 인터페이스를 위한 frontend로 구성
+- Servlet : 동적 요청 처리
+	Servlet 하는 3종류의 일
+		1. Business Logic(java)
+		2. Persistence Logic
+		3. Presentation
+# Web Application Server에서 위의 3가지 일이 일어난다. tomcat이 WAS 역할을 한다.
+
+@ WAS, Container, Context @
+- 물리적인 서버는 network에서 접근하기 위해서 ip주소를 갖음 - HTTP 기반으로 통신
+- 물리적인 서버는 WAS가 설치되어 HTTP 기반의 웹 서비스 처리
+- WAS는 웹 서비스를 위해 일반적으로 80port를 사용하며 개발용으로는 8080을 주로 사용
+	WAS는 웹 어플리케이션이 필요한 실행환경 리소스를 담고 있으므로 container라고 불림
+- WAS에서 여러개의 웹 어플리케이션을 실행할 수 있다.
+	각 애플리케이션의 실행 환경과 실행 정보 제공하는 것을 Context라고 함
+	엄밀히는 기능을 제공하는 application과 실행 환경이지만 거의 동일한 개념으로 사용
+http://192.168.0.1:8000/contextA >>> context root
+http://192.168.0.1:8000 >>> container root
+
+
+@@@ Servlet @@@
+
+@ Servlet @
+- WAS에서 실행되는 Java Web Component (WAS를 servlet container라고도 한다)
+- 장점
+	java의 OOP 기반으로 작성 : 유지보수성 및 재활용성 우수하며 플랫폼 독립적
+	높은 성능과 확장성 : 하나의 서블릿 객체만 생성하며 멀티스레딩을 지원하여 요청의 동시처리가 가능
+	확장성 : 필터를 통한 공통 모듈의 전/후 처리 리스너를 이용한 이벤트 기반 처리 가능 및 스프링 등
+- 단점
+	business logic과 presentation logic(HTML code)가 섞여서 나타남 : Servlet + JSP의 Model2 방식으로 처리 가능
+
+@ URL Mapping @
+- 클라이언트의 HTTP 요청을 Servlet과 매핑하기 위한 방법
+- 작성 방법
+	1. URL 경로 지정 : / 로 시작해서 경로 지정 가능 (/hello/hi)
+	2. 확장자 매칭 '*.확장자' 형태로 지정, 경로지정과 함께 사용 불가 (hello.do, hi.do)
+- web.xml를 활용한 mapping
+- @WebServlet 애너테이션 활용
+
+@ 경로의 종류 @
+1. 상대 경로 : /로 시작하지 않고 현재파일의 위치 기반으로 계산하는 경로
+2. 절대 경로 : /로 시작하는 경로
+	- container root : servlet 배우기 전에 사용했던 '/'는 container root
+		<a>, <link>, <mapping>의 경로
+	- context root : servlet을 배우고 나서 배우는 경로가 '/' context root
+		servlet url mapping, web.xml의 경로, include-directive의 경로
+
+@ Servlet 주요 API @
+- extends jakarta.serblet.http.HttpServlet
+	jakarta EE의 패키지
+	tomcat 등 웹 컨테이너들이 JEE 스팩 구현
+
+@ Servlet Life Cycle 관리 @
+- 개발자는 Servlet을 만들지만 객체를 만들거나 호출하지 않음 (Container가 life cycle에 따라 관리)
+	각각의 라이프 사이클 훅에서 할 일을 개발자가 적절히 작성 (Container가 호출)
+	이를 통해 Servlet이 효율적인 자원 관리와 최적화 된 성능을 구현할 수 있도록 함
+- init(ServletConfig config) : 어떤 요청도 init이 종료되기 전에는 처리될 수 없음
+	Servlet에서 필요한자원 초기화
+- destroy() : 어떤 요청이라도 처리하고 있으면 destroy는 동작하지 않음
+	init에서 초기화한 자원의 정리 작업
+
+@ HttpServletRequest, HttpServletResponse @
+- 각각 Http의 Request, Response를 추상화하기 위한 JEE 인터페이스
+- HTTP Request와 Response 포멧
+
+@ HttpServletRequest @
+- HTTP 요청을 추상화한 인터페이스로 헤더, 파라미터, 속송 및 요청 본문과 관련된 정보에 접근하는 메서드 제공
+1. String getMethod() : 요청이 만들어진 HTTP 메서드의 이름을 반환
+2. String getParameter(String name) : 요청 파라미터의 값 반환
+	String getParameterValues(String name) : 지정된 요청 파라미터의 모든 값을 포함하는 배열 반환
+3. Enumeration<String> getParameterNames() : 요청에 포함된 모든 헤더 이름의 열거형 반환
+4. String getHeader(String name) : 지정된 요청 헤더의 값을 반환
+5. void setAttribute(Stiring name, Object o) : 요청에 속성을 저장
+6. Object getAttributes(Stirng name) : 요청에 저장된 속성의 값을 반환
+7. HttpSession getSession() : 현재 요청과 연관된 세션 반환
+8. Enumeration<String> getHeaderNames() : 요청에 포함된 모든 헤더 이름의 열거형 반환
+
+@ Request parameter @
+- <form> 또는 queryString을 통해서 클라이언트가 전달하는 겂으로 (언제나 문자열)
+	처음 클라이언트에서 설정된 이후 조작은 불가
+
+@ HttpServletResponse @
+- HTTP 응답을 추상화한 인터페이스로 헤더 조회/설정, 응답 상태, 응답 전송을 위한 작업 처리
+1. setStatus() : void / 응답 상태 코드 설정
+2. setHeader(): void / HTTP 응답 헤더 설정
+3. setContentType() : void / 응답 컨텐츠 타입과 함께 char encoding도 설정
+4. getWriter() : PintWriter / 문자 응답 스트림
+5. addCookie() : void / HTTP 응답에 쿠키 추가
+6. sendRedirect() : void / 지정된 URL로 리다이렉트
+7. sendError() : void / 에러 응답 전송
+
+@  HTTP Status @
+- 웹 서버가 클라이언트의 요청을 처리한 결과를 카테고리 별로 지정된 숫자 코드로 반환
+1. 200 : OK / 요청의 정상 처리상태
+2. 201 : Created / 새로운 리소스 생성의 성공 상태
+3. 302 : Moved Temporarily / 요청한 리소스의 임시적 위치 이동 상태
+4. 400 : Bad Request / 잘못된 문법으로 인한 서버의 요청 처리 불가 상태
+5. 401 : Unauthorized / 인증 실패(당신이 누군인지 모르겠어)
+6. 403 : Forbidden / 권한 없음(당신이 누구인지는 알지만 이건 못해)
+7. 404 : Not Found / 요청한 리소스를 찾을 수 없는 상태
+8. 405 : Method Not Allowed / 허용되지 않은 HTTP 메서드 사용 상태
+9. 500 : Internal Server Error / 서버 내부 오류 발생 상태
+
+@ Content-Type과 Character Encoding @
+- Content-Type
+	서버가 전송하는 데이터의 MIME 타입으로 데이터의 형식과 인코딩 방식 포함
+	주요 content-type
+	1. text/plain : 일반 텍스트로 형식이 없는 데이터
+	2. text/html : 일반 HTML 문서, 웹 페이지로 표시됨
+	3. application/json : JSON 형식의 데이터, REST API 응답에 사용
+	4. image/jpeg : JPEG 형식의 이미지
+- Character Encoding
+	데이터를 컴퓨터가 이해하고 처리할 수 있는 형태로 변환하는 방법
+	"한"이라는 글자에 대한 이코딩 결과
+	응답의 기본 encoding은 ISO-8859-1로 한글 전송 불가 -> setContentType을 통해서 UTF-8로
+
+@ AddServlet @
+- 두 개의 숫자형 파라미터를 받아서 더하기 결과를 반환하는 Servlet
+- Servlet에서 할 일 정리
+	1. request 파라미터 조회 : 파라미터에 대한 logging 및 validation 포함
+	2. 요청에 대한 business logic 처리
+	3. 필요 시 persistence logic 연동
+	4. 응답 준비 : content type 및 encoding 설정
+	5. 응답을 위한 presentation logic 처리
+
+@ Servlet의 특징 돌아보기 @
+- Servlet의 단점
+	business logic과 presentation logic(HTML code)가 섞여서 나타남
+- Servlet의 장점
+	java의 OOP 기반으로 작성 : 유지보수성 및 재활용성 우수하며 플랫폼 독립적
+	높은 성능과 확장성 : 하나의 서블릿 객체만 생성하며 멀티스레딩을 지원하여 동시 요청 처리가 가능
+	확장성 : 필터를 통한 공통 모듈의 전/후 처리, 리스너를 이용한 이벤트 기반 처리 가능 및 스프링 등 다양한 프레임워크와 통합 용이
+
+@ Servlet은 Multi Thread에 의해 공유됨 @
+- Servlet은 공유 자원으로 Thread Safe 하지 않음
+- Serclet이 상태 정보를 가지면 데이터 문제가 발생할 수 있음
+- synchronized를 통해 동기화 시키면 제대로 성능을 발휘할 수 없음
+- 결론적으로 Servlet에는 멤버변수를 퉁해 상태를 관리하지 않는다.
+
+@ GuguServlet @
+- 1~9의 숫자형 파라미터를받아서 구구단 결과를 반환하는 Servlet
+	
+밥 1000
+샐러드 1800
+닭가슴살 2000
+
+
+
+
+
