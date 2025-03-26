@@ -1,0 +1,70 @@
+7_2_DB(JSP)_EL_JSTL.txt
+
+@ EL & JSTL @
+- JSP를 좀 더 JSP답게 만드는 요소
+- JSP에서 최대한 프로그래밍 요소 제거
+	많은 부분을 태그 중심으로 변경
+	designer 또는 publisher등이 쉽게 접근 가능
+
+EL(Expression Language)
+	표현 즉 출력을 위한 언어로 JSP의 expression(<% ... %>) 대체
+	단순한 출력은 물론 특히 웹 스코프에 저장된 attribute를 사용하는데 매우 편리
+
+JSTL : Jsp Standard Tag Library
+	자주 사용되는 기능들에 대해 정형화된 태그 제공
+	별도의 라이브러리 추가 설치 필요 
+
+@ EL 기본 @
+- 4가지 웹 스코프에 저장된 attribute를 쉽게 출력하기 위함
+- 기본표현법 : ${attribute_name}
+- 작은 범위에서 큰 범위로 확장하며 attribute의 검색 >>> 처음 발견된 값 활용
+- ${sum}은 request scope의 값
+- session scope의 값을 사용하려는 경우 명시적으로 scope 지정 : ${sessionScope.sum}
+- 값이 없을 경우 null이 아닌 공백으로 표시
+- javascript 템플릿 문자열에서 사용된 $와 혼용주의
+	el의 $ : 서버 측 표현식으로 서버에서 attribute로 변경 후 client로 전송함
+	javascript의 $: 서버와 무관하며 클라이언트에 있어야 의미가 있음 - escape 처리 필요
+
+@ EL 내장 객체 @
+- 자료 참조
+
+@ 객체 접근 법 @
+- JavaBeans의 property에 사용할 때 set/get을 제외하고 첫 글자를 소문자로 접근
+	property 이름이 아님 주의!
+- Record 사용 시는 그냥 property 사용
+- Map 계열은 key 이름으로 접근
+- javaScrip와 마찬가지로 '.' 표기법 또는 '[]' 표기법 사용 가능
+	'.'은 naming 룰에 어긋나는 경우는 사용 불가
+
+@ 객체의 메서드 호출 @
+
+@ EL 연산자 @
+- 자료 참조
+- 문자열에 대한 + 결합 연산은 지원하지 않고 자동 캐스팅
+- 나누기 : 정수 간의 연산에도 소수점의 결과를 리턴
+- 비교 연산자 : 수치 비교 뿐 아니라 문자 데이터에 대한 사전식 비교처리
+- empty 값이 true로 평가받는 경우( null, 빈 문자열, 길이가 0일 배열, 빈 collection 객체)
+
+@ JSTL @
+- Tag Library
+	개발자가 특정 비지니스 로직이나 기능 수행을 위한 태그를 직접 정의해서 사용하는 것 - 사용자 정의 태그 -
+- JSP Standard Tag Library
+	Tag Libary중 자주 사용되는 기능을 모아서 제공하는 태그 모음
+	주요 기능 : 코어(변수, 선언, 조건문, 반복문), 데이터 포멧팅, XML 처리, 데이터 베이스 활용, 국제화
+	주로 EL과 함께 사용되며 Script-let 대비 간결한 페이지 작성에 유리
+-라이브러리 설치
+	mvnrepository.com
+
+@ JSTL 사용 선언 @
+- taglib directive 활용
+	prefix : 페이지 내에서 해당 태그를 사용할 때 붙이는 접두사
+	uri: 해당 태그 라이브러리를 식별하는 고유 문자열로 태그라이브러리 로드에 사용
+	core를 가장 많이 사용함(jakarta.tags.core)
+
+@ 변수 지원 : <c:set>, <c:remove> @
+
+@ 조건문 : <c:if> <c:choose>, <c:when>,<c:otherwise>@
+@ 반복문 : <c:forEach>
+
+
+
