@@ -81,8 +81,24 @@ business 로직 상에서 presentation 로직 사용하는 것이 너무 불편�
 접근 영역
 	1. page scope / JSP 페이지 내에서 유효한 속성 저장. 같은 페이지 내에서는 접근 가능, 페이지가 종료되면 소멸 
 	   / Servlet 없음 / pageContext 내장 객체
-	2. request scope /				
+	2. request scope / 클라이언트의 요청 처리 동안 유효한 속성 저장. 요청이 완료되면 해당 속성은 소멸
+	   / request 내장 객체
+	3. session / 사용자가 웹 애플리케이션에 접속한 동안 유효한 속성 저장, 세션이 종료 만료되면 해당 속성 소멸
+	   HttpSession session = request.getSession(); / session 내장 객체
+	4. application scope / 웹 애플리케이션 전체에 걸쳐 유효한 속성 저장. 모든 사용자와 세션에서 공유 가능
+	   ServletContext application = getServletContext(); / application 내장 객체
+
+@ 웹의 영역(scope)과 사용 방법
+void setAttribute(String key, Object value) 
+속성을 지정한 키와 값으로 저장, 기존 속성 덮어쓰기
+
+Object getAttribute(String key)
+지정한 키에 해당하는 속성의 값을 반환
+
+void removeAttribute(String key) 
+지정한 키에 해당하는 속성을 제거
+
+Enumeration<String> getAttributeNames()
+모든 속성의 키를 Enumeration으로 반환
+
 	
-
-
-
